@@ -2,7 +2,7 @@ import requests
 import json
 
 user = 'KazakovK'
-url = 'https://api.github.com/users/KazakovK/repos'
+url = f'https://api.github.com/users/{user}/repos'
 response = requests.get(url)
 repos = response.json()
 
