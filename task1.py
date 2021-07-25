@@ -12,3 +12,4 @@ with open('response.json', 'w') as outfile:
 print(f"Репозитории пользователя: ")
 for item in repos:
     print(item['name'])
+
