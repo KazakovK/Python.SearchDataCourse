@@ -1,5 +1,14 @@
-
 import requests
-url = 'https://www.google.ru'
+import json
+
+user = 'KazakovK'
+url = 'https://api.github.com/users/KazakovK/repos'
 response = requests.get(url)
-print(response.content)
+repos = response.json()
+
+with open('response.json', 'w') as outfile:
+    json.dump(repos, outfile)
+
+print(f"Репозитории пользователя: ")
+for item in repos:
+    print(item['name'])
