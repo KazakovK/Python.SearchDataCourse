@@ -73,4 +73,5 @@ while check_page:
 output = pd.DataFrame()
 output = output.append(vacancy_dict, ignore_index=True)
 
+print(output)
 output.to_excel('./vacancy.xlsx')
