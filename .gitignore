@@ -160,6 +160,7 @@ dmypy.json
 # CMake
 cmake-build-*/
 
+
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
 
@@ -186,3 +187,7 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests 
+/chromedriver.exe
+/scrapy.cfg
+
+/myprojrct/
