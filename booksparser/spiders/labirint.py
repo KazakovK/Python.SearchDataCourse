@@ -21,9 +21,9 @@ class LabirintSpider(scrapy.Spider):
         book_url = response.url
         book_name = response.xpath("//h1/text()").extract_first()
         book_author = response.css("div.authors a::text").extract_first()
-        book_price = response.css("div.buying-priceold-val span::text").extract_first()
-        book_sale = response.css("div.buying-pricenew-val span::text").extract_first()
-        book_rate = response.xpath("//div[@id='rate']/text()").extract_first()
+        book_price = int(response.css("div.buying-priceold-val span::text").extract_first())
+        book_sale = int(response.css("div.buying-pricenew-val span::text").extract_first())
+        book_rate = float(response.xpath("//div[@id='rate']/text()").extract_first())
         book_id = response.xpath("//div[@id='product-info']/@data-product-id").extract_first()
         yield BooksparserItem(url=book_url, name=book_name, author=book_author, price=book_price, sale=book_sale,
                               rate=book_rate, _id=book_id)
