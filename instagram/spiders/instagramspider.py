@@ -18,8 +18,7 @@ class InstagramspiderSpider(scrapy.Spider):
         instagram_password = file.readline().replace('\n', '')
 
     user_parse = 'kazakoff13'
-    graphql_url = 'https://www.instagram.com/graphql/query/?'
-    query_posts_hash = '8c2a529969ee035a5063f2fc8602a0fd'
+    graphql_url = 'https://i.instagram.com/api/v1/friendships/'
 
 
     def parse(self, response: HtmlResponse):
@@ -39,9 +38,9 @@ class InstagramspiderSpider(scrapy.Spider):
 
     def user_parsing(self, response: HtmlResponse, username):
         user_id = self.fetch_user_id(response.text, username)
-        variables = {'id': user_id,
-                     'first': 12}
-        url_posts = self.graphql_url + f'query_hash={self.query_posts_hash}&{urlencode(variables)}'
+        variables = {'count': 12,
+                     'search_surface': "follow_list_page"}
+        url_posts = self.graphql_url + f'{user_id}/followers/?{urlencode(variables)}'
         yield response.follow(url_posts,
                               callback=self.user_data_parse,
                               cb_kwargs={'username': username,
@@ -50,23 +49,23 @@ class InstagramspiderSpider(scrapy.Spider):
 
     def user_data_parse(self, response: HtmlResponse, username, user_id, variables):
         j_data = response.json()
-        page_info = j_data.get('data').get('user').get('edge_owner_to_timeline_media').get('page_info')
-        if page_info.get('has_next_page'):
-            variables['after'] = page_info.get('end_cursor')
-            url_posts = self.graphql_url + f'query_hash={self.query_posts_hash}&{urlencode(variables)}'
+        page_info = j_data.get('next_max_id')
+        if page_info:
+            variables['max_id'] = page_info
+            url_posts = self.graphql_url + f'{user_id}/followers/?{urlencode(variables)}'
             yield response.follow(url_posts,
                                   callback=self.user_data_parse,
                                   cb_kwargs={'username': username,
                                              'user_id': user_id,
                                              'variables': deepcopy(variables)})
 
-        posts = j_data.get('data').get('user').get('edge_owner_to_timeline_media').get('edges')
-        for post in posts:
+        users = j_data.get('users')
+        for user in users:
             item = InstagramItem(user_id=user_id,
-                                   username=username,
-                                   picture=post.get('node').get('display_url'),
-                                   likes=post.get('node').get('edge_media_preview_like').get('count'),
-                                   post_data=post.get('node'))
+                                   user_id_follows=user.get('pk'),
+                                   username_follows=user.get('username'),
+                                   full_name_follows=user.get('full_name'),
+                                   picture_follows=user.get('profile_pic_url'))
             yield item
 
 
