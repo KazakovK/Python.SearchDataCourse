@@ -186,3 +186,10 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests 
+/lmparser/
+/chromedriver.exe
+/instagram/spiders/ input.txt
+/instagram/spiders/ input.txt
+/instagram/spiders/ input.txt
+/instagram/input.txt
+/instagram/image/full/
